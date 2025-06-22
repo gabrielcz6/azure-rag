@@ -8,20 +8,30 @@ from langchain.vectorstores import AzureSearch
 
 app = FastAPI()
 
-# Configuración de OpenAI Azure - Versión actualizada
+# Configuración CORRECTA para Azure OpenAI con LangChain
+print(f"🔧 Configurando Azure OpenAI...")
+print(f"   Base: {os.getenv('OPENAI_API_BASE')}")
+print(f"   Version: {os.getenv('OPENAI_API_VERSION')}")
+
+# Configurar variables de entorno para LangChain
+os.environ["OPENAI_API_TYPE"] = "azure"
+os.environ["OPENAI_API_BASE"] = os.getenv("OPENAI_API_BASE")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
+os.environ["OPENAI_API_VERSION"] = os.getenv("OPENAI_API_VERSION", "2023-05-15")
+
+# Configurar OpenAI globalmente
 openai.api_base = os.getenv("OPENAI_API_BASE")
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.api_type = "azure"
-openai.api_version = "2023-05-15"  # Cambiar a versión compatible
+openai.api_version = os.getenv("OPENAI_API_VERSION", "2023-05-15")
 
-# Configuración de embeddings con parámetros adicionales
+# Embeddings con configuración Azure específica
 embeddings = OpenAIEmbeddings(
-    deployment="demo-embedding",
-    model="text-embedding-ada-002",
+    model="demo-embedding",  # Deployment name como model
     openai_api_base=os.getenv("OPENAI_API_BASE"),
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_api_type="azure",
-    openai_api_version="2023-05-15",
+    openai_api_version=os.getenv("OPENAI_API_VERSION", "2023-05-15"),
     chunk_size=1
 )
 
@@ -46,8 +56,14 @@ def health():
     return {
         'status': 'healthy',
         'openai_base': os.getenv("OPENAI_API_BASE"),
+        'openai_version': os.getenv("OPENAI_API_VERSION"),
         'search_service': os.getenv('SEARCH_SERVICE_NAME'),
-        'search_index': os.getenv('SEARCH_INDEX_NAME')
+        'search_index': os.getenv('SEARCH_INDEX_NAME'),
+        'env_vars': {
+            'OPENAI_API_TYPE': os.environ.get('OPENAI_API_TYPE'),
+            'OPENAI_API_BASE': os.environ.get('OPENAI_API_BASE'),
+            'OPENAI_API_VERSION': os.environ.get('OPENAI_API_VERSION')
+        }
     }
 
 @app.post('/ask')
