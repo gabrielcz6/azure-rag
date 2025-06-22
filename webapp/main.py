@@ -25,13 +25,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.api_type = "azure"
 openai.api_version = os.getenv("OPENAI_API_VERSION", "2023-05-15")
 
-# Embeddings con configuración Azure específica
+# Embeddings con configuración Azure específica (versión antigua de LangChain)
 embeddings = OpenAIEmbeddings(
-    model="demo-embedding",  # Deployment name como model
+    deployment="demo-embedding",    # ✅ deployment name
+    model="text-embedding-ada-002", # ✅ model name 
     openai_api_base=os.getenv("OPENAI_API_BASE"),
     openai_api_key=os.getenv("OPENAI_API_KEY"),
     openai_api_type="azure",
-    openai_api_version=os.getenv("OPENAI_API_VERSION", "2023-05-15"),
+    openai_api_version=os.getenv("OPENAI_API_VERSION", "2023-07-01-preview"),
     chunk_size=1
 )
 
