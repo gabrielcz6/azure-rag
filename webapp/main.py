@@ -12,7 +12,7 @@ app = FastAPI()
 openai.api_base = os.getenv("OPENAI_API_BASE")  # Your Azure OpenAI resource's endpoint value.
 openai.api_key = os.getenv("OPENAI_API_KEY")
 openai.api_type = "azure"
-openai.api_version = "2023-05-15" 
+openai.api_version = "2024-07-18" 
 
 embeddings = OpenAIEmbeddings(deployment="demo-embedding", chunk_size=1)
 
